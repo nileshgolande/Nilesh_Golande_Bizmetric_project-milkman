@@ -1,27 +1,10 @@
 import React from 'react';
-import { products } from '../services/products';
 
-// This would typically come from an API, using mock data for now
+// This would typically come from an API, using an empty state for now
 const getMostSubscribedProduct = () => {
-  const productCounts: { [key: string]: number } = {};
-  // Simulate subscriptions to count most popular product
-  products.forEach(product => {
-    productCounts[product.name] = (productCounts[product.name] || 0) + 1; // Simplistic count
-  });
-
-  let mostSubscribedName = '';
-  let maxCount = 0;
-
-  for (const name in productCounts) {
-    if (productCounts[name] > maxCount) {
-      maxCount = productCounts[name];
-      mostSubscribedName = name;
-    }
-  }
-
   return {
-    productName: mostSubscribedName || 'N/A',
-    subscriptionCount: maxCount,
+    productName: 'N/A',
+    subscriptionCount: 0,
   };
 };
 

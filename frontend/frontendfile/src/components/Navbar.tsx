@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
+import { useAuth } from '../hooks/useAuth';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 
 const Navbar: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
+  const { isAuthenticated, user, logout } = useAuth();
 
   return (
     <nav className="bg-white dark:bg-darkText shadow-sm sticky top-0 z-50 transition-colors duration-300">
@@ -16,10 +18,35 @@ const Navbar: React.FC = () => {
           {/* Desktop navigation links */}
           <Link to="/" className="text-darkText dark:text-white hover:text-primary transition-colors duration-300">Home</Link>
           <Link to="/products" className="text-darkText dark:text-white hover:text-primary transition-colors duration-300">Products</Link>
-          <Link to="/subscribe" className="text-darkText dark:text-white hover:text-primary transition-colors duration-300">Subscribe</Link>
-          <Link to="/dashboard/subscriptions" className="text-darkText dark:text-white hover:text-primary transition-colors duration-300">My Subscriptions</Link>
-          <Link to="/admin" className="text-darkText dark:text-white hover:text-primary transition-colors duration-300">Admin Dashboard</Link>
-          <Link to="/contact" className="text-darkText dark:text-white hover:text-primary transition-colors duration-300">Contact</Link>
+          {user?.role !== 'STAFF' ? (
+            <Link to="/subscribe" className="text-darkText dark:text-white hover:text-primary transition-colors duration-300">Subscribe</Link>
+          ) : null}
+          {user?.role === 'CUSTOMER' ? (
+            <Link to="/dashboard" className="text-darkText dark:text-white hover:text-primary transition-colors duration-300">My Subscriptions</Link>
+          ) : null}
+          {user?.role === 'STAFF' ? (
+            <Link to="/admin" className="text-darkText dark:text-white hover:text-primary transition-colors duration-300">Admin Dashboard</Link>
+          ) : null}
+          {isAuthenticated ? (
+            <>
+              {user?.role === 'CUSTOMER' ? (
+                <span className="text-darkText dark:text-white transition-colors duration-300">
+                  {user.name} Login
+                </span>
+              ) : null}
+              <button
+                type="button"
+                onClick={logout}
+                className="text-darkText dark:text-white hover:text-primary transition-colors duration-300"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login/customer" className="text-darkText dark:text-white hover:text-primary transition-colors duration-300">Login</Link>
+            </>
+          )}
           <button onClick={toggleTheme} className="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
             {theme === 'dark' ? (
               <SunIcon className="h-6 w-6 text-yellow-400" />
@@ -36,23 +63,24 @@ const Navbar: React.FC = () => {
               <MoonIcon className="h-6 w-6 text-gray-700" />
             )}
           </button>
-          {/* Mobile menu button */}
-          <button className="text-darkText dark:text-white focus:outline-none">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              ></path>
-            </svg>
-          </button>
+          {!isAuthenticated ? (
+            <div className="flex items-center gap-2 text-xs">
+              <Link to="/login/customer" className="text-darkText dark:text-white hover:text-primary">Login</Link>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              {user?.role === 'CUSTOMER' ? (
+                <span className="text-darkText dark:text-white text-xs">{user.name} Login</span>
+              ) : null}
+              <button
+                type="button"
+                onClick={logout}
+                className="text-darkText dark:text-white text-sm hover:text-primary"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>

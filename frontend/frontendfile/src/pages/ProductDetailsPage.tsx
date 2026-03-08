@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchPublicProducts, products } from '../services/products';
+import { fetchPublicProducts } from '../services/products';
 import type { Product } from '../services/products';
 import Button from '../components/Button';
 import { PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
 import LoadingSkeleton from '../components/LoadingSkeleton';
+import { useAuth } from '../hooks/useAuth';
 
 const ProductDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { isAuthenticated, user } = useAuth();
   const [product, setProduct] = useState<Product | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -27,7 +29,7 @@ const ProductDetailsPage: React.FC = () => {
         if (!mounted) {
           return;
         }
-        setProduct(products.find((p) => p.id === id));
+        setProduct(undefined);
       } finally {
         if (mounted) {
           setLoading(false);
@@ -132,7 +134,11 @@ const ProductDetailsPage: React.FC = () => {
                 </Button>
               </div>
             </div>
-            <Link to={`/subscribe/${product.id}`}><Button variant="primary" size="large" className="w-full">Subscribe Now</Button></Link>
+            <Link to={isAuthenticated && user?.role === 'CUSTOMER' ? `/subscribe/${product.id}` : `/login/customer?redirect=${encodeURIComponent(`/subscribe/${product.id}`)}`}>
+              <Button variant="primary" size="large" className="w-full">
+                {isAuthenticated && user?.role === 'CUSTOMER' ? 'Subscribe Now' : 'Login to Subscribe'}
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

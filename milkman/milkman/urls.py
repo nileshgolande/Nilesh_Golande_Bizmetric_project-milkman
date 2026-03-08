@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 # Custom admin site: allow any authenticated user (not only is_staff)
@@ -32,19 +34,12 @@ admin.autodiscover()
 
 urlpatterns = [
     path('admin/', admin_site.urls),
-    path('api/auth/', include('staff.auth_urls')),
-    path('api/staff/', include('staff.urls')),
-    path('api/customer/', include('customer.urls')),
-    path('api/category/', include('category.urls')),
-    path('api/product/', include('product.urls')),
-    path('api/subscription/', include('subscription.urls')),
-    path('staff/', include('staff.urls')),
-    path('customer/', include('customer.urls')),
-    path('category/', include('category.urls')),
-    path('product/', include('product.urls')),
-    path('subscription/', include('subscription.urls')),
+    path('api/v1/auth/', include('accounts.urls')),
+    path('api/v1/', include('operations.urls')),
     path('', lambda request: JsonResponse({
         "status": "ok",
         "message": "Milkman API is running",
     }), name='home'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

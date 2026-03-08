@@ -1,14 +1,22 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import BasePermission
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 from .models import Customer
 from .serializers import CustomerSerializer
 from staff.auth import StaffTokenAuthentication
 
+class IsStaffRole(BasePermission):
+    def has_permission(self, request, view):
+        payload = request.auth if isinstance(request.auth, dict) else {}
+        return payload.get("role") == "STAFF"
+
+
 class CustomerViewSet(APIView):
     authentication_classes = [StaffTokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsStaffRole]
 
     def get(self, request, format=None):
         customers = Customer.objects.all()
@@ -23,7 +31,7 @@ class CustomerViewSet(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk, format=None):
-        customer = Customer.objects.get(pk=pk)
+        customer = get_object_or_404(Customer, pk=pk)
         serializer = CustomerSerializer(customer, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -31,6 +39,6 @@ class CustomerViewSet(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        customer = Customer.objects.get(pk=pk)
+        customer = get_object_or_404(Customer, pk=pk)
         customer.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

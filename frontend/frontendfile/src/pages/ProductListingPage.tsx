@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { fetchPublicProducts, products } from '../services/products';
+import { useSearchParams } from 'react-router-dom';
+import { fetchPublicProducts } from '../services/products';
 import type { Product } from '../services/products';
 import Button from '../components/Button';
 import { Link } from 'react-router-dom';
@@ -9,11 +10,13 @@ import { ArchiveBoxIcon } from '@heroicons/react/24/outline';
 type Category = Product['category'] | 'All';
 
 const ProductListingPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<Category>('All');
   const [loading, setLoading] = useState(true);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [displayedProducts, setDisplayedProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') ?? '');
 
   useEffect(() => {
     let mounted = true;
@@ -31,8 +34,7 @@ const ProductListingPage: React.FC = () => {
         if (!mounted) {
           return;
         }
-        setAllProducts(products);
-        setError('Unable to reach backend API. Showing local data.');
+        setError('Unable to reach backend API. Please try again later.');
       } finally {
         if (mounted) {
           setLoading(false);
@@ -47,12 +49,20 @@ const ProductListingPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setDisplayedProducts(
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    const byCategory =
       selectedCategory === 'All'
         ? allProducts
-        : allProducts.filter((product) => product.category === selectedCategory)
-    );
-  }, [allProducts, selectedCategory]);
+        : allProducts.filter((product) => product.category === selectedCategory);
+
+    const bySearch = normalizedSearch
+      ? byCategory.filter((product) =>
+          [product.name, product.category, product.description].some((value) => value.toLowerCase().includes(normalizedSearch)),
+        )
+      : byCategory;
+
+    setDisplayedProducts(bySearch);
+  }, [allProducts, searchTerm, selectedCategory]);
 
   const categories: Category[] = ['All', ...Array.from(new Set(allProducts.map((p) => p.category)))];
 
@@ -82,6 +92,26 @@ const ProductListingPage: React.FC = () => {
     <div className="container mx-auto px-4 py-8 bg-lightBg dark:bg-gray-900 text-darkText dark:text-white min-h-screen transition-colors duration-300">
       <h1 className="text-4xl font-bold mb-8 text-center">Our Products</h1>
       {error && <p className="text-center text-red-500 mb-4">{error}</p>}
+
+      <div className="max-w-xl mx-auto mb-8 flex gap-2">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          placeholder="Search by name, category, description"
+          className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white"
+        />
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => {
+            const query = searchTerm.trim();
+            setSearchParams(query ? { q: query } : {});
+          }}
+        >
+          Search
+        </Button>
+      </div>
 
       <div className="flex flex-wrap justify-center gap-3 mb-12">
         {categories.map((category) => (
