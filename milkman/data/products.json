@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Cow Milk",
+    "description": "Fresh whole cow milk — farm to table.",
+    "price": 20.00,
+    "category": "Milk",
+    "image_url": "https://picsum.photos/seed/cow-milk/800/600"
+  },
+  {
+    "name": "Buffalo Milk",
+    "description": "Rich buffalo milk, full cream.",
+    "price": 25.00,
+    "category": "Milk",
+    "image_url": "https://picsum.photos/seed/buffalo-milk/800/600"
+  },
+  {
+    "name": "Toned Milk",
+    "description": "Light and healthy toned milk for daily use.",
+    "price": 18.50,
+    "category": "Milk",
+    "image_url": "https://picsum.photos/seed/toned-milk/800/600"
+  },
+  {
+    "name": "Organic Milk",
+    "description": "Organic milk from grass-fed cows.",
+    "price": 35.00,
+    "category": "Milk",
+    "image_url": "https://picsum.photos/seed/organic-milk/800/600"
+  },
+  {
+    "name": "Flavored Milk (Strawberry)",
+    "description": "Delicious strawberry flavored milk for kids.",
+    "price": 30.00,
+    "category": "Flavored",
+    "image_url": "https://picsum.photos/seed/strawberry-milk/800/600"
+  }
+]
