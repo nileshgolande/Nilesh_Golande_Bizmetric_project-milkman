@@ -21,7 +21,7 @@ timeout /t 2 /nobreak
 
 REM Start React Frontend (Vite) in a new window
 echo Starting React Frontend Server...
-start cmd /k "cd /d %PROJECT_DIR%frontend && npm run dev"
+start cmd /k "cd /d %PROJECT_DIR%..\frontend\frontendfile && npm run dev"
 
 REM Wait for servers to fully start
 timeout /t 3 /nobreak

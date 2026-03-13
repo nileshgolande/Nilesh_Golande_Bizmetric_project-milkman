@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import SubscriptionForm from '../components/SubscriptionForm';
 import { useToast } from '../hooks/useToast';
 import { useAuth } from '../hooks/useAuth';

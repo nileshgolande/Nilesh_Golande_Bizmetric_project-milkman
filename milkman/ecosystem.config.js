@@ -11,7 +11,7 @@ module.exports = {
       name: "milkman-react",
       script: "npm",
       args: "run dev -- --host",
-      cwd: "frontend",
+      cwd: "../frontend/frontendfile",
     }
   ]
 };

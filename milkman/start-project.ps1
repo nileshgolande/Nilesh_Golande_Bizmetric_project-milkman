@@ -15,7 +15,7 @@ Start-Sleep -Seconds 2
 
 # Start React Frontend (Vite)
 Write-Host "Starting React Frontend..." -ForegroundColor Yellow
-Start-Process powershell -Arguments "-NoExit", "-Command", "cd '$projectDir\frontend'; npm run dev"
+Start-Process powershell -Arguments "-NoExit", "-Command", "cd '$projectDir\..\frontend\frontendfile'; npm run dev"
 Start-Sleep -Seconds 3
 
 Write-Host ""

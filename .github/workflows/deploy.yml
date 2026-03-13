@@ -25,23 +25,22 @@ jobs:
             git pull origin main
 
             # 2. Django Setup (Backend)
-            cd milkman/milkman
+            cd ~/milkman/milkman
             python3 -m venv venv
             source venv/bin/activate
             pip install --upgrade pip
-            pip install -r ../requirements.txt gunicorn
+            pip install -r requirements.txt gunicorn
             python3 manage.py migrate
             python3 manage.py collectstatic --noinput
             deactivate
-            cd ../..
 
-            # 3. Express Setup (Frontend Server)
-            cd milkman/backend
+            # 3. React Setup (Frontend)
+            cd ~/milkman/frontend/frontendfile
             npm install
-            cd ../..
+            npm run build
 
             # 4. Restart services using PM2
-            pm2 restart milkman/ecosystem.config.js || pm2 start milkman/ecosystem.config.js
+            pm2 restart ~/milkman/milkman/ecosystem.config.js || pm2 start ~/milkman/milkman/ecosystem.config.js
             pm2 save
 
             # 5. Reload Nginx (if config changed)
