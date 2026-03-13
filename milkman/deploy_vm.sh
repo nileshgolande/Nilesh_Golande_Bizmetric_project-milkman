@@ -19,6 +19,7 @@ git reset --hard origin/main
 # 2. Setup Backend (Django)
 echo "Setting up Django backend..."
 cd $BACKEND_DIR
+mkdir -p static media staticfiles
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
