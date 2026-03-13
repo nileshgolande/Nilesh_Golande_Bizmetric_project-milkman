@@ -10,13 +10,13 @@ module.exports = {
       name: "milkman-express",
       script: "server.js",
       interpreter: "node",
-      cwd: "../backend",
+      cwd: "backend",
     },
     {
       name: "milkman-react",
       script: "npm",
       args: "run dev -- --host",
-      cwd: "../frontend",
+      cwd: "frontend",
     }
   ]
 };
