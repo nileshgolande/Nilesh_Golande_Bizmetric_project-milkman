@@ -8,12 +8,6 @@ module.exports = {
       interpreter: "none",
     },
     {
-      name: "milkman-express",
-      script: "server.js",
-      interpreter: "node",
-      cwd: "backend",
-    },
-    {
       name: "milkman-react",
       script: "npm",
       args: "run dev -- --host",
