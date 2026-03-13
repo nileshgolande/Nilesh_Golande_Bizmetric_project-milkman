@@ -19,7 +19,7 @@ from django.urls import path,include
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('django-admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('staff/', include('staff.urls')),
     path('customer/', include('customer.urls')),
     path('category/', include('category.urls')),
