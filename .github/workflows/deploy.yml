@@ -41,6 +41,7 @@ jobs:
 
             # 4. Restart services using PM2
             pm2 restart ~/milkman/milkman/ecosystem.config.js || pm2 start ~/milkman/milkman/ecosystem.config.js
+            pm2 delete milkman-react || true
             pm2 save
 
             # 5. Reload Nginx (if config changed)

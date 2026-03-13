@@ -6,12 +6,6 @@ module.exports = {
       args: "--bind 127.0.0.1:8000 milkman.wsgi:application",
       cwd: ".",
       interpreter: "none",
-    },
-    {
-      name: "milkman-react",
-      script: "npm",
-      args: "run dev -- --host",
-      cwd: "../frontend/frontendfile",
     }
   ]
 };
