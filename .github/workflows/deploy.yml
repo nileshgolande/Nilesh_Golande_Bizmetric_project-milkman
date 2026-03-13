@@ -1,0 +1,50 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: SSH and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          key: ${{ secrets.AZURE_VM_SSH_KEY }}
+          script: |
+            # 1. Update project from git
+            cd ~/milkman
+            git pull origin main
+
+            # 2. Django Setup (Backend)
+            cd milkman/milkman
+            python3 -m venv venv
+            source venv/bin/activate
+            pip install --upgrade pip
+            pip install -r ../requirements.txt gunicorn
+            python3 manage.py migrate
+            python3 manage.py collectstatic --noinput
+            deactivate
+            cd ../..
+
+            # 3. Express Setup (Frontend Server)
+            cd milkman/backend
+            npm install
+            cd ../..
+
+            # 4. Restart services using PM2
+            pm2 restart milkman/ecosystem.config.js || pm2 start milkman/ecosystem.config.js
+            pm2 save
+
+            # 5. Reload Nginx (if config changed)
+            sudo cp ~/milkman/milkman/nginx.conf /etc/nginx/sites-available/milkman
+            sudo ln -sf /etc/nginx/sites-available/milkman /etc/nginx/sites-enabled/
+            sudo nginx -t && sudo systemctl reload nginx
