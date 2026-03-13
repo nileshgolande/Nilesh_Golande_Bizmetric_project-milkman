@@ -8,7 +8,8 @@ module.exports = {
     },
     {
       name: "milkman-express",
-      script: "node server.js",
+      script: "server.js",
+      interpreter: "node",
       cwd: "../backend",
     },
     {
