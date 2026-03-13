@@ -16,12 +16,16 @@ from .serializers import (
 from .models import User
 
 
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+@method_decorator(csrf_exempt, name='dispatch')
 class CustomerRegistrationView(generics.CreateAPIView):
     serializer_class = CustomerRegistrationSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -39,6 +43,7 @@ class ProfileView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class PasswordResetRequestView(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -61,6 +66,7 @@ class PasswordResetRequestView(APIView):
         return Response({"detail": "Password reset instructions sent to your email."}, status=status.HTTP_200_OK)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class PasswordResetConfirmView(APIView):
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
@@ -72,6 +78,7 @@ class PasswordResetConfirmView(APIView):
         return Response({"detail": "Password reset successfully."}, status=status.HTTP_200_OK)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class AdminSetupView(generics.CreateAPIView):
     serializer_class = AdminSetupSerializer
     permission_classes = [permissions.AllowAny]

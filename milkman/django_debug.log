@@ -1,1 +1,7 @@
 INFO 2026-03-14 00:32:36,225 autoreload 43512 42324 Watching for file changes with StatReloader
+INFO 2026-03-14 00:35:20,467 autoreload 43512 42324 C:\Users\pradi\Downloads\NILESH\milkproject\milkman\accounts\views.py changed, reloading.
+INFO 2026-03-14 00:35:22,629 autoreload 42512 30040 Watching for file changes with StatReloader
+INFO 2026-03-14 00:35:44,489 autoreload 42512 30040 C:\Users\pradi\Downloads\NILESH\milkproject\milkman\accounts\views.py changed, reloading.
+INFO 2026-03-14 00:35:46,710 autoreload 30420 10428 Watching for file changes with StatReloader
+INFO 2026-03-14 00:35:52,928 autoreload 30420 10428 C:\Users\pradi\Downloads\NILESH\milkproject\milkman\accounts\views.py changed, reloading.
+INFO 2026-03-14 00:35:55,244 autoreload 8504 7632 Watching for file changes with StatReloader
