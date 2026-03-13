@@ -48,11 +48,17 @@ chmod +x /home/azureuser
 chmod +x $PROJECT_ROOT
 chmod -R 755 $FRONTEND_DIR/dist
 
-# 6. Restart PM2
+# 6. Restart PM2 and cleanup
+echo "Cleaning up old processes..."
+# Kill anything on port 8000 (Django) or 5173 (old Vite)
+sudo fuser -k 8000/tcp || true
+sudo fuser -k 5173/tcp || true
+
 echo "Restarting PM2 processes..."
 cd $BACKEND_DIR
 pm2 delete milkman-django || true
 pm2 delete milkman-react || true
+pm2 flush # Clear old logs
 pm2 start ecosystem.config.js
 pm2 save
 
