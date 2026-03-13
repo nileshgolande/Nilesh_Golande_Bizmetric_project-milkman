@@ -1,5 +1,5 @@
 @echo off
-REM Start Milk Project - Both Django and Node Servers
+REM Start Milk Project - Django and React (Vite)
 REM This script launches both servers in separate windows
 
 cls
@@ -9,19 +9,19 @@ echo   Milk Project Startup
 echo ================================
 echo.
 
-REM Get the project directory
-cd /d "C:\Users\pradi\Downloads\NILESH\milkproject\day2"
+REM Get the current directory
+set PROJECT_DIR=%~dp0
 
 REM Start Django Backend in a new window
 echo Starting Django Backend Server...
-start cmd /k "cd milkman && python manage.py runserver"
+start cmd /k "cd /d %PROJECT_DIR% && python manage.py runserver"
 
 REM Wait a moment for Django to start
 timeout /t 2 /nobreak
 
-REM Start Node Frontend Server in a new window
-echo Starting Node Frontend Server...
-start cmd /k "cd backend && npm start"
+REM Start React Frontend (Vite) in a new window
+echo Starting React Frontend Server...
+start cmd /k "cd /d %PROJECT_DIR%frontend && npm run dev"
 
 REM Wait for servers to fully start
 timeout /t 3 /nobreak
@@ -32,12 +32,12 @@ echo ================================
 echo   Servers Started Successfully!
 echo ================================
 echo.
-echo 📱 Products Page:   http://localhost:3000
-echo 🔧 Admin Dashboard: http://localhost:3000/admin
-echo ⚙️  Django Admin:    http://localhost:8000/admin
+echo 📱 React Frontend:  http://localhost:5173
+echo ⚙️  Django Backend:  http://localhost:8000
+echo 🔧 Django Admin:    http://localhost:8000/admin
 echo.
-echo Opening products page in browser...
-start http://localhost:3000
+echo Opening React Frontend in browser...
+start http://localhost:5173
 
 echo.
 echo Press any key to exit this window...

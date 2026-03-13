@@ -1,19 +1,21 @@
-# Start Milk Project With Both Django and Node Servers
+# Start Milk Project With Django and React (Vite)
 
 Write-Host "================================" -ForegroundColor Green
 Write-Host "Milk Project Startup Script" -ForegroundColor Green
 Write-Host "================================" -ForegroundColor Green
 Write-Host ""
 
+# Get the script directory
+$projectDir = $PSScriptRoot
+
 # Start Django Backend
 Write-Host "Starting Django Backend..." -ForegroundColor Yellow
-$djangoPath = "C:\Users\pradi\Downloads\NILESH\milkproject\day2"
-Start-Process powershell -Arguments "-NoExit", "-Command", "cd '$djangoPath\milkman'; python manage.py runserver"
+Start-Process powershell -Arguments "-NoExit", "-Command", "cd '$projectDir'; python manage.py runserver"
 Start-Sleep -Seconds 2
 
-# Start Node Frontend Server  
-Write-Host "Starting Node Frontend Server..." -ForegroundColor Yellow
-Start-Process powershell -Arguments "-NoExit", "-Command", "cd '$djangoPath\backend'; npm start"
+# Start React Frontend (Vite)
+Write-Host "Starting React Frontend..." -ForegroundColor Yellow
+Start-Process powershell -Arguments "-NoExit", "-Command", "cd '$projectDir\frontend'; npm run dev"
 Start-Sleep -Seconds 3
 
 Write-Host ""
@@ -21,10 +23,10 @@ Write-Host "================================" -ForegroundColor Green
 Write-Host "✅ Both servers are starting!" -ForegroundColor Green
 Write-Host "================================" -ForegroundColor Green
 Write-Host ""
-Write-Host "📱 Products Page:   http://localhost:3000" -ForegroundColor Cyan
-Write-Host "🔧 Admin Dashboard: http://localhost:3000/admin" -ForegroundColor Cyan
-Write-Host "⚙️  Django Admin:    http://localhost:8000/admin" -ForegroundColor Cyan
+Write-Host "📱 React Frontend:  http://localhost:5173" -ForegroundColor Cyan
+Write-Host "⚙️  Django Backend:  http://localhost:8000" -ForegroundColor Cyan
+Write-Host "🔧 Django Admin:    http://localhost:8000/admin" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "The products page should open automatically in your browser." -ForegroundColor Magenta
-Write-Host "If it doesn't, manually visit: http://localhost:3000" -ForegroundColor Magenta
+Write-Host "The React frontend should open automatically in your browser." -ForegroundColor Magenta
+Write-Host "If it doesn't, manually visit: http://localhost:5173" -ForegroundColor Magenta
 Write-Host ""
