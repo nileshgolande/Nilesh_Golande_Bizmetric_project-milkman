@@ -36,6 +36,7 @@ npm run build
 
 # 4. Configure Nginx
 echo "Configuring Nginx..."
+sudo mkdir -p /var/www/certbot
 sudo cp $BACKEND_DIR/nginx.conf /etc/nginx/sites-available/milkman
 sudo ln -sf /etc/nginx/sites-available/milkman /etc/nginx/sites-enabled/
 # Ensure Nginx runs as azureuser for static file access
