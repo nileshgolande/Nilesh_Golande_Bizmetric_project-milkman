@@ -64,5 +64,6 @@ pm2 save
 
 echo "======================================================"
 echo "DEPLOYMENT COMPLETED SUCCESSFULLY!"
-echo "Your app should be live at: http://40.127.15.76"
+echo "Frontend: http://milkmanauto.duckdns.org"
+echo "Backend:  http://milkmanautoapi.duckdns.org"
 echo "======================================================"

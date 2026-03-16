@@ -232,7 +232,7 @@ interface ApiAdminPayment {
   created_at: string;
 }
 
-export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
+export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? 'http://milkmanautoapi.duckdns.org').replace(/\/$/, '');
 
 const normalizeApiImage = (imageValue?: string | null): string => {
   if (!imageValue) {
