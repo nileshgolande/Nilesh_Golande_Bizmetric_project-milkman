@@ -58,7 +58,7 @@ sudo fuser -k 5173/tcp || true
 echo "Restarting PM2 processes..."
 cd $BACKEND_DIR
 pm2 delete milkman-django || true
-pm2 delete milkman-react || true
+# pm2 delete milkman-react || true
 pm2 flush # Clear old logs
 pm2 start ecosystem.config.js
 pm2 save
