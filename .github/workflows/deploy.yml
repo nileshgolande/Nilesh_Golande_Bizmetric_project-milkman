@@ -1,3 +1,55 @@
+# name: Deploy to Azure VM
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: SSH and deploy
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.AZURE_VM_HOST }}
+#           username: ${{ secrets.AZURE_VM_USER }}
+#           key: ${{ secrets.AZURE_VM_SSH_KEY }}
+#           script: |
+#             cd ~/milkman
+#             git fetch origin
+#             git reset --hard origin/main
+
+#             # 2. Django Setup (Backend in milkman/)
+#             cd milkman/milkman
+#             python3 -m venv venv
+#             source venv/bin/activate
+#             pip install --upgrade pip
+#             pip install -r ../requirements.txt gunicorn
+#             python3 manage.py migrate
+#             python3 manage.py collectstatic --noinput
+#             deactivate
+#             cd ../..
+
+#             # 3. React Frontend (frontend/frontendfile)
+#             cd frontend/frontendfile
+#             npm install
+#             VITE_API_BASE_URL="http://milkmanautoapi.duckdns.org" npm run build
+#             cd ../..
+
+#             # 4. Restart Django service using PM2
+#             cd milkman
+#             pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
+#             pm2 save
+
+#             # 5. Reload Nginx (if config changed)
+#             sudo cp ~/milkman/milkman/nginx.conf /etc/nginx/sites-available/milkman
+#             sudo ln -sf /etc/nginx/sites-available/milkman /etc/nginx/sites-enabled/
+#             sudo nginx -t && sudo systemctl reload nginx
 name: Deploy to Azure VM
 
 on:
@@ -20,33 +72,71 @@ jobs:
           username: ${{ secrets.AZURE_VM_USER }}
           key: ${{ secrets.AZURE_VM_SSH_KEY }}
           script: |
-            cd ~/milkman
+            set -e
+
+            echo "======================================================"
+            echo "STEP 1: Pull latest code"
+            echo "======================================================"
+            cd /home/azureuser/milkman
             git fetch origin
             git reset --hard origin/main
 
-            # 2. Django Setup (Backend in milkman/)
-            cd milkman/milkman
-            python3 -m venv venv
-            source venv/bin/activate
-            pip install --upgrade pip
-            pip install -r ../requirements.txt gunicorn
-            python3 manage.py migrate
-            python3 manage.py collectstatic --noinput
-            deactivate
-            cd ../..
+            echo "======================================================"
+            echo "STEP 2: Django Backend Setup"
+            echo "======================================================"
+            cd /home/azureuser/milkman/milkman
 
-            # 3. React Frontend (frontend/frontendfile)
-            cd frontend/frontendfile
+            # Create venv only if it doesn't exist
+            if [ ! -d "venv" ]; then
+              python3 -m venv venv
+              echo "✅ venv created"
+            fi
+
+            # Always use venv python/pip directly — no activate needed
+            venv/bin/pip install --upgrade pip
+            venv/bin/pip install -r requirements.txt gunicorn
+
+            # Run Django commands using venv python directly
+            venv/bin/python manage.py migrate
+            venv/bin/python manage.py collectstatic --noinput
+            echo "✅ Django setup done"
+
+            echo "======================================================"
+            echo "STEP 3: React Frontend Build"
+            echo "======================================================"
+            cd /home/azureuser/milkman/frontend/frontendfile
             npm install
             VITE_API_BASE_URL="http://milkmanautoapi.duckdns.org" npm run build
-            cd ../..
+            echo "✅ Frontend build done"
 
-            # 4. Restart Django service using PM2
-            cd milkman
-            pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
+            echo "======================================================"
+            echo "STEP 4: Restart PM2"
+            echo "======================================================"
+            cd /home/azureuser/milkman
+
+            # Kill any process holding port 8000
+            fuser -k 8000/tcp || true
+
+            # Restart or start using ecosystem file
+            pm2 delete all || true
+            pm2 start /home/azureuser/milkman/ecosystem.config.js
             pm2 save
+            echo "✅ PM2 restarted"
 
-            # 5. Reload Nginx (if config changed)
-            sudo cp ~/milkman/milkman/nginx.conf /etc/nginx/sites-available/milkman
-            sudo ln -sf /etc/nginx/sites-available/milkman /etc/nginx/sites-enabled/
+            echo "======================================================"
+            echo "STEP 5: Nginx Config"
+            echo "======================================================"
+            sudo cp /home/azureuser/milkman/milkman/nginx.conf /etc/nginx/sites-available/milkman
+            sudo ln -sf /etc/nginx/sites-available/milkman /etc/nginx/sites-enabled/milkman
+
+            # Remove default nginx site if exists
+            sudo rm -f /etc/nginx/sites-enabled/default
+
             sudo nginx -t && sudo systemctl reload nginx
+            echo "✅ Nginx reloaded"
+
+            echo "======================================================"
+            echo "DEPLOYMENT COMPLETE"
+            echo "Frontend : http://milkmanauto.duckdns.org"
+            echo "Backend  : http://milkmanautoapi.duckdns.org"
+            echo "======================================================"
