@@ -159,6 +159,7 @@ const AdminDashboardPage: React.FC = () => {
   }, [subscriptions, subscriberFilter, subscriberSearch, customerMap]);
 
   const loadAdminData = React.useCallback(async () => {
+    console.log('hhhhhhhh')
     if (!token) {
       return;
     }
